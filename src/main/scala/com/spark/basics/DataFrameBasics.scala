@@ -98,8 +98,20 @@ object DataFrameBasics extends App {
   )
 
   private val smartPhonesDF: DataFrame = smartPhones.toDF("Owner", "model", "screen_dim", "camera_megapixels", "ram")
-  println(smartPhonesDF.schema)
+ /* println(smartPhonesDF.schema)
   smartPhonesDF.printSchema()
-  smartPhonesDF.show()
+  smartPhonesDF.show()*/
+
+  /**
+   * Exercise :
+   *  2) Read another json file from the data folder (movies.json)
+   *      - print it's schema
+   *      - count the number of rows
+   */
+
+  private val moviesFrame: DataFrame = spark.read.json("src/main/resources/data/movies.json")
+  println(moviesFrame.schema)
+  moviesFrame.printSchema()
+  println(moviesFrame.count()) // Total number of rows in the frame
 
 }
