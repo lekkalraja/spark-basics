@@ -74,9 +74,32 @@ object DataFrameBasics extends App {
   fromSeqWithoutColumns.take(10).foreach(println)*/
 
   private val fromSeqWIthColumns: DataFrame = cars.toDF("Name", "Miles_per_Gallon", "Cylinders", "Displacement", "Horsepower", "Weight_in_lbs", "Acceleration", "Year", "Origin")
-  println(fromSeqWIthColumns.schema)
+ /* println(fromSeqWIthColumns.schema)
   fromSeqWIthColumns.show()
   fromSeqWIthColumns.printSchema()
-  fromSeqWIthColumns.take(10).foreach(println)
+  fromSeqWIthColumns.take(10).foreach(println)*/
+
+  /**
+   * Exercise :
+   *  1. Create a manual DF Describing smartphones
+   *      - Owner
+   *      - model
+   *      - screen dim
+   *      - camera megapixels
+   *      - ram
+   */
+
+  private val smartPhones = Seq(
+    ("Apple", "IPhone-X", "1024x678", "12", "8GB"),
+    ("Nokia", "11", "1020x543", "11", "4GB"),
+    ("OPPO", "11", "1020x543", "11", "4GB"),
+    ("SAMSUNG", "11", "1020x543", "11", "4GB"),
+    ("SONY", "11", "1020x543", "11", "4GB"),
+  )
+
+  private val smartPhonesDF: DataFrame = smartPhones.toDF("Owner", "model", "screen_dim", "camera_megapixels", "ram")
+  println(smartPhonesDF.schema)
+  smartPhonesDF.printSchema()
+  smartPhonesDF.show()
 
 }
