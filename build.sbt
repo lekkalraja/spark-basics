@@ -10,5 +10,6 @@ libraryDependencies ++= Seq (
   "org.apache.spark" %% "spark-core" % sparkVersion,
   "org.apache.spark" %% "spark-sql" % sparkVersion,
   "org.apache.logging.log4j" % "log4j-api" % logVersion,
-  "org.apache.logging.log4j" % "log4j-core" % logVersion
+  "org.apache.logging.log4j" % "log4j-core" % logVersion,
+   "org.postgresql" % "postgresql" % "42.2.16"
 )
