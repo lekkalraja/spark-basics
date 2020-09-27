@@ -1,7 +1,6 @@
 package com.spark.basics
 
-import com.spark.basics.DataFrameBasics.spark
-import org.apache.spark.sql.functions.{col, expr, max}
+import org.apache.spark.sql.functions.{expr, max}
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
 object Joins extends App {
@@ -78,6 +77,10 @@ object Joins extends App {
   private val deptMgrDF: DataFrame = spark.read.format("jdbc").options(postgres + ("dbtable" -> "public.dept_manager")).load()
   private val titlesDF: DataFrame = spark.read.format("jdbc").options(postgres + ("dbtable" -> "public.titles")).load()
 
+  /*println(s"Employees count : ${employeesDF.count()}")
+  println(s"Salaries count : ${salariesDF.count()}")
+  println(s"Dept Manager's count : ${deptMgrDF.count()}")
+  println(s"Titles count : ${titlesDF.count()}")*/
   /**
    * 1. Show all employees and their max salary
    */
@@ -94,16 +97,17 @@ object Joins extends App {
     //.show()
   employeesDF.join(deptMgrDF, Seq("emp_no"), "left_anti")
     //.show()
-
-  import spark.implicits._
   /**
    *  3. find the job titles of the best paid 10 employees in the company
    */
+  private val latestTitlesDF: DataFrame = titlesDF.groupBy("emp_no").agg(max("to_date").as("to_date"))
+    .join(titlesDF, Seq("emp_no", "to_date"), "inner")
+
   salariesDF.groupBy("emp_no")
     .max("salary").as("max_salary")
     .limit(10)
     .join(employeesDF, "emp_no")
-    //.join(titlesDF.groupBy("emp_no").agg( max("to_date")))
+    .join(latestTitlesDF, "emp_no")
     .show()
 
 
