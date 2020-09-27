@@ -1,6 +1,7 @@
 package com.spark.basics
 
-import org.apache.spark.sql.functions.expr
+import com.spark.basics.DataFrameBasics.spark
+import org.apache.spark.sql.functions.{col, expr, max}
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
 object Joins extends App {
@@ -60,5 +61,56 @@ object Joins extends App {
    */
 
   guitarPlayersDF.join(guitarsDF.withColumnRenamed("id", "guitarId"), expr("array_contains(guitars, guitarId)"))//.show()
+
+  /**
+   * Exercises
+   */
+
+  private val postgres = Map(
+    "driver" -> "org.postgresql.Driver",
+    "url" -> "jdbc:postgresql://localhost:5432/rtjvm",
+    "user" -> "docker",
+    "password" -> "docker",
+  )
+
+  private val employeesDF: DataFrame = spark.read.format("jdbc").options(postgres + ("dbtable" -> "public.employees")).load()
+  private val salariesDF: DataFrame = spark.read.format("jdbc").options(postgres + ("dbtable" -> "public.salaries")).load()
+  private val deptMgrDF: DataFrame = spark.read.format("jdbc").options(postgres + ("dbtable" -> "public.dept_manager")).load()
+  private val titlesDF: DataFrame = spark.read.format("jdbc").options(postgres + ("dbtable" -> "public.titles")).load()
+
+  /**
+   * 1. Show all employees and their max salary
+   */
+  salariesDF.groupBy(salariesDF.col("emp_no"))
+    .max("salary").as("max_salary")
+    .join(employeesDF, "emp_no")
+//    .show()
+
+  /**
+   * 2. Show all employees who were never managers
+   */
+  titlesDF.where(" title = 'Manager'")
+    .join(employeesDF, Seq("emp_no"), "right_outer")
+    //.show()
+  employeesDF.join(deptMgrDF, Seq("emp_no"), "left_anti")
+    //.show()
+
+  import spark.implicits._
+  /**
+   *  3. find the job titles of the best paid 10 employees in the company
+   */
+  salariesDF.groupBy("emp_no")
+    .max("salary").as("max_salary")
+    .limit(10)
+    .join(employeesDF, "emp_no")
+    //.join(titlesDF.groupBy("emp_no").agg( max("to_date")))
+    .show()
+
+
+
+    /*.join(employeesDF, "emp_no")
+    .join(titlesDF, "emp_no")
+    .orderBy("emp_no", "to_date")
+    .show(10)*/
 
 }
