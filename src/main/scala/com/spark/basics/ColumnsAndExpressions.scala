@@ -115,9 +115,7 @@ object ColumnsAndExpressions extends App {
    * Unioning = adding more columns to DF
    */
 
-  private val moreCarsDF: DataFrame = spark.read
-    .option("inferSchema", "true")
-    .json("src/main/resources/data/more_cars.json")
+  private val moreCarsDF: DataFrame = spark.read.option("inferSchema", "true").json("src/main/resources/data/more_cars.json")
 
   //moreCarsDF.show()
 
@@ -127,5 +125,26 @@ object ColumnsAndExpressions extends App {
 
   private val originatedCountries: Dataset[Row] = allCars.selectExpr("Origin").distinct()
   //originatedCountries.show()
+
+  /**
+   * Exercises
+   *  1. Read the movies DF and select 2 columns of your choice
+   *  2. Create another column summing up the total profit of the movies => (US_Gross + Worldwide_Gross + US_DVD_Sales)
+   *  3. Select all Comedy movies with IMDB rating above 6
+   */
+
+  private val moviesDF: DataFrame = spark.read.option("inferSchema", "true").json("src/main/resources/data/movies.json")
+  //moviesDF.show()
+  /*moviesDF.select(col("Title"), col("Release_Date")).show()
+  moviesDF.select("Title", "Release_Date").show()
+  moviesDF.select(moviesDF.col("Title"), column("Release_Date")).show()
+  moviesDF.selectExpr("Title", "Release_Date").show()*/
+
+  private val moviesWithTotalProfits: DataFrame = moviesDF.withColumn("Total_Profits", col("US_Gross") + col("Worldwide_Gross")  )
+  //moviesWithTotalProfits.selectExpr("Title" , "US_Gross", "Worldwide_Gross",  "Total_Profits").show()
+  //moviesDF.selectExpr("Title", "US_Gross", "Worldwide_Gross", "US_Gross + Worldwide_Gross as Total_Profits").show()
+  //moviesDF.select(col("Title"), column("US_Gross"), $"Worldwide_Gross", (col("US_Gross") + col("Worldwide_Gross")).as("Total_Profit")).show()
+
+  //moviesDF.where("Major_Genre = 'Comedy' and IMDB_Rating > 6" ).show()
 
 }
