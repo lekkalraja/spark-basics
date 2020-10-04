@@ -1,7 +1,7 @@
-package com.spark.basics
+package com.spark.basics.dataframes
 
 import org.apache.spark.sql.functions.{col, column, expr}
-import org.apache.spark.sql.{Column, DataFrame, Dataset, Row, SparkSession}
+import org.apache.spark.sql._
 
 object ColumnsAndExpressions extends App {
 
@@ -22,12 +22,13 @@ object ColumnsAndExpressions extends App {
   /**
    * Selecting (Projecting) only Acceleration Column in new DF
    */
-  private val accelerationDF: DataFrame = carsDF.select(acceleration)// Will Create new DF with Acceleration Column alone
+  private val accelerationDF: DataFrame = carsDF.select(acceleration) // Will Create new DF with Acceleration Column alone
   //accelerationDF.show()
 
   /**
    * Various Select Methods
    */
+
   import spark.implicits._
 
   private val carsSubsetDF: DataFrame = carsDF.select(
@@ -71,8 +72,8 @@ object ColumnsAndExpressions extends App {
   /**
    * DataFrame Processing yiels new DF
    *  1. Adding a column
-   *  2. Renaming a Column
-   *  3. Removing a Column
+   *     2. Renaming a Column
+   *     3. Removing a Column
    */
 
   private val carsDFWithKgs: DataFrame = carsDF.withColumn("Weight_in_kgs", col("Weight_in_lbs") / 2.2)
@@ -129,8 +130,8 @@ object ColumnsAndExpressions extends App {
   /**
    * Exercises
    *  1. Read the movies DF and select 2 columns of your choice
-   *  2. Create another column summing up the total profit of the movies => (US_Gross + Worldwide_Gross + US_DVD_Sales)
-   *  3. Select all Comedy movies with IMDB rating above 6
+   *     2. Create another column summing up the total profit of the movies => (US_Gross + Worldwide_Gross + US_DVD_Sales)
+   *     3. Select all Comedy movies with IMDB rating above 6
    */
 
   private val moviesDF: DataFrame = spark.read.option("inferSchema", "true").json("src/main/resources/data/movies.json")
@@ -140,7 +141,7 @@ object ColumnsAndExpressions extends App {
   moviesDF.select(moviesDF.col("Title"), column("Release_Date")).show()
   moviesDF.selectExpr("Title", "Release_Date").show()*/
 
-  private val moviesWithTotalProfits: DataFrame = moviesDF.withColumn("Total_Profits", col("US_Gross") + col("Worldwide_Gross")  )
+  private val moviesWithTotalProfits: DataFrame = moviesDF.withColumn("Total_Profits", col("US_Gross") + col("Worldwide_Gross"))
   //moviesWithTotalProfits.selectExpr("Title" , "US_Gross", "Worldwide_Gross",  "Total_Profits").show()
   //moviesDF.selectExpr("Title", "US_Gross", "Worldwide_Gross", "US_Gross + Worldwide_Gross as Total_Profits").show()
   //moviesDF.select(col("Title"), column("US_Gross"), $"Worldwide_Gross", (col("US_Gross") + col("Worldwide_Gross")).as("Total_Profit")).show()

@@ -1,4 +1,4 @@
-package com.spark.basics
+package com.spark.basics.dataframes
 
 import org.apache.spark.sql.functions.{expr, max}
 import org.apache.spark.sql.{DataFrame, SparkSession}
@@ -17,14 +17,14 @@ object Joins extends App {
   /**
    * JOINS
    */
-  guitarPlayersDF.join(bandsDF, guitarPlayersDF.col("band") === bandsDF.col("id"), "inner")//.show()
+  guitarPlayersDF.join(bandsDF, guitarPlayersDF.col("band") === bandsDF.col("id"), "inner") //.show()
 
   /**
    * OUTER JOINS
    */
-  guitarPlayersDF.join(bandsDF, guitarPlayersDF.col("band") === bandsDF.col("id"), "left_outer")//.show()
-  guitarPlayersDF.join(bandsDF, guitarPlayersDF.col("band") === bandsDF.col("id"), "right_outer")//.show()
-  guitarPlayersDF.join(bandsDF, guitarPlayersDF.col("band") === bandsDF.col("id"), "outer")//.show()
+  guitarPlayersDF.join(bandsDF, guitarPlayersDF.col("band") === bandsDF.col("id"), "left_outer") //.show()
+  guitarPlayersDF.join(bandsDF, guitarPlayersDF.col("band") === bandsDF.col("id"), "right_outer") //.show()
+  guitarPlayersDF.join(bandsDF, guitarPlayersDF.col("band") === bandsDF.col("id"), "outer") //.show()
 
   /**
    * SEMI-JOINS
@@ -32,20 +32,20 @@ object Joins extends App {
   /**
    * semi-joins : everything in the left DF for which there is a row in the right DF satisfying the condition
    */
-  guitarPlayersDF.join(bandsDF, guitarPlayersDF.col("band") === bandsDF.col("id"), "left_semi")//.show()
+  guitarPlayersDF.join(bandsDF, guitarPlayersDF.col("band") === bandsDF.col("id"), "left_semi") //.show()
 
   /**
    * anti-joins = Everything in the left DF for which there is NO row in the right DF satisfying the condition
    */
-  guitarPlayersDF.join(bandsDF, guitarPlayersDF.col("band") === bandsDF.col("id"), "left_anti")//.show()
+  guitarPlayersDF.join(bandsDF, guitarPlayersDF.col("band") === bandsDF.col("id"), "left_anti") //.show()
 
   // Things to bear in mind
-  guitarPlayersDF.join(bandsDF, guitarPlayersDF.col("band") === bandsDF.col("id"), "inner")//.select("id", "band")//.show() // It will crash due to => Reference 'id' is ambiguous
+  guitarPlayersDF.join(bandsDF, guitarPlayersDF.col("band") === bandsDF.col("id"), "inner") //.select("id", "band")//.show() // It will crash due to => Reference 'id' is ambiguous
 
   /**
    * Option 1 : Rename the column on which we are joining
    */
-  guitarPlayersDF.join(bandsDF.withColumnRenamed("id", "band"), "band").select("id", "band")//.show()
+  guitarPlayersDF.join(bandsDF.withColumnRenamed("id", "band"), "band").select("id", "band") //.show()
 
   /**
    * Option 2 : Drop the duplicate column from the resultant set
@@ -53,13 +53,13 @@ object Joins extends App {
   guitarPlayersDF.join(bandsDF, guitarPlayersDF.col("band") === bandsDF.col("id"), "inner")
     .drop(bandsDF.col("id"))
     .select("id", "band")
-    //.show()
+  //.show()
 
   /**
    * Using Complex Types
    */
 
-  guitarPlayersDF.join(guitarsDF.withColumnRenamed("id", "guitarId"), expr("array_contains(guitars, guitarId)"))//.show()
+  guitarPlayersDF.join(guitarsDF.withColumnRenamed("id", "guitarId"), expr("array_contains(guitars, guitarId)")) //.show()
 
   /**
    * Exercises
@@ -87,18 +87,18 @@ object Joins extends App {
   salariesDF.groupBy(salariesDF.col("emp_no"))
     .max("salary").as("max_salary")
     .join(employeesDF, "emp_no")
-//    .show()
+  //    .show()
 
   /**
    * 2. Show all employees who were never managers
    */
   titlesDF.where(" title = 'Manager'")
     .join(employeesDF, Seq("emp_no"), "right_outer")
-    //.show()
+  //.show()
   employeesDF.join(deptMgrDF, Seq("emp_no"), "left_anti")
-    //.show()
+  //.show()
   /**
-   *  3. find the job titles of the best paid 10 employees in the company
+   * 3. find the job titles of the best paid 10 employees in the company
    */
   private val latestTitlesDF: DataFrame = titlesDF.groupBy("emp_no").agg(max("to_date").as("to_date"))
     .join(titlesDF, Seq("emp_no", "to_date"), "inner")
@@ -111,8 +111,7 @@ object Joins extends App {
     .show()
 
 
-
-    /*.join(employeesDF, "emp_no")
+  /*.join(employeesDF, "emp_no")
     .join(titlesDF, "emp_no")
     .orderBy("emp_no", "to_date")
     .show(10)*/

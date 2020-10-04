@@ -1,7 +1,7 @@
-package com.spark.basics
+package com.spark.basics.dataframes
 
+import org.apache.spark.sql.types._
 import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
-import org.apache.spark.sql.types.{DateType, DoubleType, LongType, StringType, StructField, StructType}
 
 object DataSources extends App {
 
@@ -65,7 +65,7 @@ object DataSources extends App {
     .mode(SaveMode.Overwrite)
     .option("path", "src/main/resources/cars.csv")
     .save()
-    //.csv("src/main/resources/data/cars.csv")
+  //.csv("src/main/resources/data/cars.csv")
 
   //JSON Flags
   spark.read
@@ -128,7 +128,7 @@ object DataSources extends App {
     .json("src/main/resources/data/movies.json")
 
   moviesDF.write
-    .option("sep","\t")
+    .option("sep", "\t")
     .option("header", "true")
     .mode(SaveMode.Overwrite)
     .csv("src/main/resources/movies.csv")
